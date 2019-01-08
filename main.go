@@ -19,7 +19,7 @@ import (
 	"github.com/robfig/cron"
 )
 
-const feedURLLeagueNews = "https://na.leagueoflegends.com/en/rss.xml"
+const feedURLLeagueNews = "https://euw.leagueoflegends.com/en/rss.xml"
 
 var (
 	conf      config
@@ -77,8 +77,10 @@ func cronRSSNews(feedURL string) {
 
 	// Send to Discord only if there is new item
 	now := time.Now()
+
 	for _, new := range lastNews {
-		if now.Sub(*new.PublishedParsed) < time.Second*60 {
+		if now.Sub(new.PublishedParsed.Local()) < time.Minute*1 {
+			log.Println("There is a new article")
 			newsToSend = append(newsToSend, new)
 		}
 	}
